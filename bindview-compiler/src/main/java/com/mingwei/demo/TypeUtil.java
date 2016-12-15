@@ -8,4 +8,5 @@ import com.squareup.javapoet.ClassName;
 public class TypeUtil {
     public static final ClassName FINDER = ClassName.get("com.example.api", "Finder");
     public static final ClassName INJECTOR = ClassName.get("com.example.api", "Injector");
+    public static final ClassName ANDROID_VIEW = ClassName.get("android.view", "View");
 }

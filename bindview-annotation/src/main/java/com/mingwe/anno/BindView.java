@@ -1,4 +1,4 @@
-package com.mingwe.demo;
+package com.mingwe.anno;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

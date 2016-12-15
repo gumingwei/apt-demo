@@ -1,7 +1,7 @@
 package com.mingwei.demo;
 
 import com.google.auto.service.AutoService;
-import com.mingwe.demo.BindView;
+import com.mingwe.anno.BindView;
 import com.mingwei.demo.model.AnnotatedClass;
 import com.mingwei.demo.model.BindViewField;
 import com.squareup.javapoet.JavaFile;
@@ -75,7 +75,7 @@ public class BindViewProcessor extends AbstractProcessor {
         /**
          * 这段代码测试Javapoet
          */
-        /*MethodSpec methodmain = MethodSpec.methodBuilder("main")
+        MethodSpec methodmain = MethodSpec.methodBuilder("main")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
                 .addParameter(String[].class, "arge")
@@ -93,11 +93,7 @@ public class BindViewProcessor extends AbstractProcessor {
         } catch (IOException e) {
             e.printStackTrace();
 
-        }*/
-
-        mAnnotatedClassMap.clear();
-
-
+        }
         return false;
     }
 

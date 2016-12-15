@@ -1,6 +1,6 @@
 package com.mingwei.demo.model;
 
-import com.mingwe.demo.BindView;
+import com.mingwe.anno.BindView;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;

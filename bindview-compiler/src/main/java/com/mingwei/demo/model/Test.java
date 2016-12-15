@@ -1,4 +1,4 @@
-package com.mingwei.model;
+package com.mingwei.demo.model;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
