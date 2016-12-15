@@ -3,6 +3,7 @@ package com.mingwei.demo;
 import com.google.auto.service.AutoService;
 import com.mingwe.demo.BindView;
 import com.mingwei.demo.model.AnnotatedClass;
+import com.mingwei.demo.model.BindViewField;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -20,6 +21,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
@@ -70,7 +72,10 @@ public class BindViewProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
-        MethodSpec methodmain = MethodSpec.methodBuilder("main")
+        /**
+         * 这段代码测试Javapoet
+         */
+        /*MethodSpec methodmain = MethodSpec.methodBuilder("main")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
                 .addParameter(String[].class, "arge")
@@ -88,9 +93,31 @@ public class BindViewProcessor extends AbstractProcessor {
         } catch (IOException e) {
             e.printStackTrace();
 
-        }
+        }*/
+
+        mAnnotatedClassMap.clear();
+
 
         return false;
+    }
+
+    private void processBindView(RoundEnvironment environment) {
+        for (Element element : environment.getElementsAnnotatedWith(BindView.class)) {
+            AnnotatedClass annotatedClass = getAnnotatedClass(element);
+            BindViewField bindViewField = new BindViewField(element);
+            annotatedClass.addFiled(bindViewField);
+        }
+    }
+
+    private AnnotatedClass getAnnotatedClass(Element element) {
+        TypeElement encloseElement = (TypeElement) element.getEnclosingElement();
+        String fullClassName = encloseElement.getQualifiedName().toString();
+        AnnotatedClass annotatedClass = mAnnotatedClassMap.get(fullClassName);
+        if (annotatedClass == null) {
+            annotatedClass = new AnnotatedClass(encloseElement, mElementUtils);
+            mAnnotatedClassMap.put(fullClassName, annotatedClass);
+        }
+        return annotatedClass;
     }
 
     private void error(String msg, Object... args) {
