@@ -22,7 +22,6 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
@@ -49,7 +48,7 @@ public class BindViewProcessor extends AbstractProcessor {
     /**
      * 解析的目标注解集合
      */
-    private Map<String, com.mingwei.myprocess.model.AnnotatedClass> mAnnotatedClassMap = new HashMap<>();
+    private Map<String, AnnotatedClass> mAnnotatedClassMap = new HashMap<>();
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -116,8 +115,11 @@ public class BindViewProcessor extends AbstractProcessor {
         return true;
     }
 
+    /**
+     *
+     * @param roundEnv
+     */
     private void processBindView(RoundEnvironment roundEnv) {
-        //Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(BindView.class);
         for (Element element : roundEnv.getElementsAnnotatedWith(BindView.class)) {
             AnnotatedClass annotatedClass = getAnnotatedClass(element);
             BindViewField field = new BindViewField(element);
