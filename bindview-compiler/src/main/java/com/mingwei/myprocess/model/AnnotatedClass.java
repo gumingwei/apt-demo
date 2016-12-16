@@ -17,6 +17,8 @@ import javax.lang.model.util.Elements;
 
 /**
  * Created by mingwei on 12/10/16.
+ * CSDN:    http://blog.csdn.net/u013045971
+ * Github:  https://github.com/gumingwei
  */
 public class AnnotatedClass {
 
@@ -43,7 +45,7 @@ public class AnnotatedClass {
         return mClassElement.getQualifiedName().toString();
     }
 
-    public void addFiled(BindViewField field) {
+    public void addField(BindViewField field) {
         mFiled.add(field);
     }
 
@@ -68,7 +70,7 @@ public class AnnotatedClass {
         String className = getClassName(mClassElement, packageName);
         ClassName bindClassName = ClassName.get(packageName, className);
 
-        TypeSpec finderClass = TypeSpec.classBuilder(bindClassName.simpleName() + "$$Inject")
+        TypeSpec finderClass = TypeSpec.classBuilder(bindClassName.simpleName() + "$$Injector")
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ParameterizedTypeName.get(TypeUtil.INJECTOR, TypeName.get(mClassElement.asType())))
                 .addMethod(injectMethodBuilder.build())

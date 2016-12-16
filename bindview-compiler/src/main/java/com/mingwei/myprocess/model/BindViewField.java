@@ -10,6 +10,8 @@ import javax.lang.model.type.TypeMirror;
 
 /**
  * Created by mingwei on 12/10/16.
+ * CSDN:    http://blog.csdn.net/u013045971
+ * Github:  https://github.com/gumingwei
  * 被BindView注解标记的字段的模型类
  */
 public class BindViewField {
@@ -19,7 +21,7 @@ public class BindViewField {
     private int mResId;
 
     public BindViewField(Element element) throws IllegalArgumentException {
-        if (mFieldElement.getKind() != ElementKind.FIELD) {
+        if (element.getKind() != ElementKind.FIELD) {
             throw new IllegalArgumentException(String.format("Only field can be annotated with @%s",
                     BindView.class.getSimpleName()));
         }

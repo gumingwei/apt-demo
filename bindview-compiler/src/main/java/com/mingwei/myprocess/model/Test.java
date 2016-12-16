@@ -9,6 +9,8 @@ import javax.lang.model.element.Modifier;
 
 /**
  * Created by mingwei on 12/15/16.
+ * CSDN:    http://blog.csdn.net/u013045971
+ * Github:  https://github.com/gumingwei
  */
 public class Test {
     public static void main(String[] args) throws Exception {

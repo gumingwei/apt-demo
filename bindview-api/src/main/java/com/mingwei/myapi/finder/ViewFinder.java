@@ -5,6 +5,8 @@ import android.view.View;
 
 /**
  * Created by mingwei on 12/16/16.
+ * CSDN:http://blog.csdn.net/u013045971
+ * Github:https://github.com/gumingwei
  */
 public class ViewFinder implements Finder {
 

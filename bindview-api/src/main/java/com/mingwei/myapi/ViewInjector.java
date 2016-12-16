@@ -12,6 +12,8 @@ import java.util.Map;
 
 /**
  * Created by mingwei on 12/16/16.
+ * CSDN:    http://blog.csdn.net/u013045971
+ * Github:  https://github.com/gumingwei
  */
 public class ViewInjector {
 
@@ -33,6 +35,13 @@ public class ViewInjector {
         inject(host, view, VIEW_FINDER);
     }
 
+    /**
+     * 获取目标类
+     *
+     * @param host
+     * @param source
+     * @param finder
+     */
     public static void inject(Object host, Object source, Finder finder) {
         String className = host.getClass().getName();
         try {

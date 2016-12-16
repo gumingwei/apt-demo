@@ -2,6 +2,7 @@ package com.mingwei.myprocess;
 
 import com.google.auto.service.AutoService;
 import com.mingwe.myanno.BindView;
+import com.mingwei.myprocess.model.AnnotatedClass;
 import com.mingwei.myprocess.model.BindViewField;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -28,6 +29,8 @@ import javax.tools.Diagnostic;
 
 /**
  * Created by mingwei on 12/10/16.
+ * CSDN:    http://blog.csdn.net/u013045971
+ * Github:  https://github.com/gumingwei
  */
 @AutoService(Processor.class)
 public class BindViewProcessor extends AbstractProcessor {
@@ -74,7 +77,7 @@ public class BindViewProcessor extends AbstractProcessor {
         /**
          * 这段代码测试Javapoet
          */
-        MethodSpec methodmain = MethodSpec.methodBuilder("main")
+        /*MethodSpec methodmain = MethodSpec.methodBuilder("main")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(void.class)
                 .addParameter(String[].class, "arge")
@@ -92,24 +95,43 @@ public class BindViewProcessor extends AbstractProcessor {
         } catch (IOException e) {
             e.printStackTrace();
 
+        }*/
+        mAnnotatedClassMap.clear();
+        try {
+            processBindView(roundEnv);
+        } catch (IllegalArgumentException e) {
+            error(e.getMessage());
+            return true;
         }
-        return false;
+
+        try {
+            for (AnnotatedClass annotatedClass : mAnnotatedClassMap.values()) {
+                info("generating file for %s", annotatedClass.getFullClassName());
+                annotatedClass.generateFinder().writeTo(mFiler);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            error("Generate file failed,reason:%s", e.getMessage());
+        }
+        return true;
     }
 
-    private void processBindView(RoundEnvironment environment) {
-        for (Element element : environment.getElementsAnnotatedWith(BindView.class)) {
-            com.mingwei.myprocess.model.AnnotatedClass annotatedClass = getAnnotatedClass(element);
-            BindViewField bindViewField = new BindViewField(element);
-            annotatedClass.addFiled(bindViewField);
+    private void processBindView(RoundEnvironment roundEnv) {
+        //Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(BindView.class);
+        for (Element element : roundEnv.getElementsAnnotatedWith(BindView.class)) {
+            AnnotatedClass annotatedClass = getAnnotatedClass(element);
+            BindViewField field = new BindViewField(element);
+            annotatedClass.addField(field);
+            System.out.print("p_element=" + element.getSimpleName() + ",p_set=" + element.getModifiers());
         }
     }
 
-    private com.mingwei.myprocess.model.AnnotatedClass getAnnotatedClass(Element element) {
+    private AnnotatedClass getAnnotatedClass(Element element) {
         TypeElement encloseElement = (TypeElement) element.getEnclosingElement();
         String fullClassName = encloseElement.getQualifiedName().toString();
-        com.mingwei.myprocess.model.AnnotatedClass annotatedClass = mAnnotatedClassMap.get(fullClassName);
+        AnnotatedClass annotatedClass = mAnnotatedClassMap.get(fullClassName);
         if (annotatedClass == null) {
-            annotatedClass = new com.mingwei.myprocess.model.AnnotatedClass(encloseElement, mElementUtils);
+            annotatedClass = new AnnotatedClass(encloseElement, mElementUtils);
             mAnnotatedClassMap.put(fullClassName, annotatedClass);
         }
         return annotatedClass;
@@ -117,5 +139,9 @@ public class BindViewProcessor extends AbstractProcessor {
 
     private void error(String msg, Object... args) {
         mMessager.printMessage(Diagnostic.Kind.ERROR, String.format(msg, args));
+    }
+
+    private void info(String msg, Object... args) {
+        mMessager.printMessage(Diagnostic.Kind.NOTE, String.format(msg, args));
     }
 }
