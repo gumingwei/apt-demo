@@ -1,6 +1,6 @@
-package com.mingwei.demo.model;
+package com.mingwei.myprocess.model;
 
-import com.mingwei.demo.TypeUtil;
+import com.mingwei.myprocess.TypeUtil;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -62,7 +62,6 @@ public class AnnotatedClass {
         for (BindViewField field : mFiled) {
             injectMethodBuilder.addStatement("host.$N=($T)finder.findView(source,$L)", field.getFieldName()
                     , ClassName.get(field.getFieldType()), field.getResId());
-
         }
 
         String packageName = getPackageName(mClassElement);

@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.mingwe.anno.BindView;
+import com.mingwe.myanno.BindView;
 
 public class MainActivity extends AppCompatActivity {
 

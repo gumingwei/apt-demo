@@ -1,4 +1,4 @@
-package com.mingwei.demo;
+package com.mingwei.myprocess;
 
 import com.squareup.javapoet.ClassName;
 

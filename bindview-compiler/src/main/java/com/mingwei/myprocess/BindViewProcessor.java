@@ -1,9 +1,8 @@
-package com.mingwei.demo;
+package com.mingwei.myprocess;
 
 import com.google.auto.service.AutoService;
-import com.mingwe.anno.BindView;
-import com.mingwei.demo.model.AnnotatedClass;
-import com.mingwei.demo.model.BindViewField;
+import com.mingwe.myanno.BindView;
+import com.mingwei.myprocess.model.BindViewField;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -47,7 +46,7 @@ public class BindViewProcessor extends AbstractProcessor {
     /**
      * 解析的目标注解集合
      */
-    private Map<String, AnnotatedClass> mAnnotatedClassMap = new HashMap<>();
+    private Map<String, com.mingwei.myprocess.model.AnnotatedClass> mAnnotatedClassMap = new HashMap<>();
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -99,18 +98,18 @@ public class BindViewProcessor extends AbstractProcessor {
 
     private void processBindView(RoundEnvironment environment) {
         for (Element element : environment.getElementsAnnotatedWith(BindView.class)) {
-            AnnotatedClass annotatedClass = getAnnotatedClass(element);
+            com.mingwei.myprocess.model.AnnotatedClass annotatedClass = getAnnotatedClass(element);
             BindViewField bindViewField = new BindViewField(element);
             annotatedClass.addFiled(bindViewField);
         }
     }
 
-    private AnnotatedClass getAnnotatedClass(Element element) {
+    private com.mingwei.myprocess.model.AnnotatedClass getAnnotatedClass(Element element) {
         TypeElement encloseElement = (TypeElement) element.getEnclosingElement();
         String fullClassName = encloseElement.getQualifiedName().toString();
-        AnnotatedClass annotatedClass = mAnnotatedClassMap.get(fullClassName);
+        com.mingwei.myprocess.model.AnnotatedClass annotatedClass = mAnnotatedClassMap.get(fullClassName);
         if (annotatedClass == null) {
-            annotatedClass = new AnnotatedClass(encloseElement, mElementUtils);
+            annotatedClass = new com.mingwei.myprocess.model.AnnotatedClass(encloseElement, mElementUtils);
             mAnnotatedClassMap.put(fullClassName, annotatedClass);
         }
         return annotatedClass;
