@@ -15,7 +15,11 @@ import java.util.Map;
  * CSDN:    http://blog.csdn.net/u013045971
  * Github:  https://github.com/gumingwei
  */
-public class ViewInjector {
+public class ButterKnife {
+
+    public ButterKnife() {
+        throw new AssertionError("No .instances");
+    }
 
     private static final ActivityFinder ACTIVITY_FINDER = new ActivityFinder();
 
@@ -23,16 +27,16 @@ public class ViewInjector {
 
     private static Map<String, Injector> FINDER_MAP = new HashMap<>();
 
-    public static void inject(Activity activity) {
-        inject(activity, activity, ACTIVITY_FINDER);
+    public static void bind(Activity activity) {
+        bind(activity, activity, ACTIVITY_FINDER);
     }
 
-    public static void inject(View view) {
-        inject(view, view);
+    public static void bind(View view) {
+        bind(view, view);
     }
 
-    public static void inject(Object host, View view) {
-        inject(host, view, VIEW_FINDER);
+    public static void bind(Object host, View view) {
+        bind(host, view, VIEW_FINDER);
     }
 
     /**
@@ -42,7 +46,7 @@ public class ViewInjector {
      * @param source
      * @param finder
      */
-    public static void inject(Object host, Object source, Finder finder) {
+    public static void bind(Object host, Object source, Finder finder) {
         String className = host.getClass().getName();
         try {
             Injector injector = FINDER_MAP.get(className);

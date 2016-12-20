@@ -5,8 +5,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.mingwe.myanno.BindView;
-import com.mingwei.myapi.Injector;
-import com.mingwei.myapi.ViewInjector;
+import com.mingwei.myapi.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ViewInjector.inject(this);
+        ButterKnife.bind(this);
         mText.setText("newqqqqqqqqq");
     }
 }
