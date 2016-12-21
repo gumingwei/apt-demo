@@ -1,12 +1,13 @@
 package com.mingwe.myanno;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.CLASS)
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.CLASS;
+
+@Target(FIELD)
+@Retention(CLASS)
 public @interface BindView {
     /**
      * 用来装id
