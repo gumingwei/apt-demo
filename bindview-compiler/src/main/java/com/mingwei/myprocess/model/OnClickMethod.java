@@ -17,7 +17,7 @@ public class OnClickMethod {
 
     private Name mMethodName;
 
-    private int[] ids;
+    public int[] ids;
 
     public OnClickMethod(Element element) {
         if (element.getKind() != ElementKind.METHOD) {

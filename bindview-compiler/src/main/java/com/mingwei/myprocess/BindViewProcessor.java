@@ -2,8 +2,10 @@ package com.mingwei.myprocess;
 
 import com.google.auto.service.AutoService;
 import com.mingwe.myanno.BindView;
+import com.mingwe.myanno.OnClick;
 import com.mingwei.myprocess.model.AnnotatedClass;
 import com.mingwei.myprocess.model.BindViewField;
+import com.mingwei.myprocess.model.OnClickMethod;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -62,6 +64,7 @@ public class BindViewProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> types = new LinkedHashSet<>();
         types.add(BindView.class.getCanonicalName());
+        types.add(OnClick.class.getCanonicalName());
         return types;
     }
 
@@ -72,32 +75,10 @@ public class BindViewProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-
-        /**
-         * 这段代码测试Javapoet
-         */
-        /*MethodSpec methodmain = MethodSpec.methodBuilder("main")
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .returns(void.class)
-                .addParameter(String[].class, "arge")
-                .addStatement("$T.out.print($S)", System.class, "hello javapoet")
-                .build();
-        TypeSpec typeMain = TypeSpec.classBuilder("MainPP")
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addMethod(methodmain)
-                .build();
-
-        JavaFile javaFile = JavaFile.builder("com.mingwei.japdemo", typeMain).build();
-
-        try {
-            javaFile.writeTo(mFiler);
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }*/
         mAnnotatedClassMap.clear();
         try {
             processBindView(roundEnv);
+            processOnClick(roundEnv);
         } catch (IllegalArgumentException e) {
             error(e.getMessage());
             return true;
@@ -116,7 +97,6 @@ public class BindViewProcessor extends AbstractProcessor {
     }
 
     /**
-     *
      * @param roundEnv
      */
     private void processBindView(RoundEnvironment roundEnv) {
@@ -137,6 +117,14 @@ public class BindViewProcessor extends AbstractProcessor {
             mAnnotatedClassMap.put(fullClassName, annotatedClass);
         }
         return annotatedClass;
+    }
+
+    private void processOnClick(RoundEnvironment roundEnv) {
+        for (Element element : roundEnv.getElementsAnnotatedWith(OnClick.class)) {
+            AnnotatedClass annotatedClass = getAnnotatedClass(element);
+            OnClickMethod method = new OnClickMethod(element);
+            annotatedClass.addMethod(method);
+        }
     }
 
     private void error(String msg, Object... args) {

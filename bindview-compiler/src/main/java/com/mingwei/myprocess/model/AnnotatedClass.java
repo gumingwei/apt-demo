@@ -31,6 +31,10 @@ public class AnnotatedClass {
      */
     public List<BindViewField> mFiled;
     /**
+     * 方法
+     */
+    public List<OnClickMethod> mMethod;
+    /**
      * 元素帮助类
      */
     public Elements mElementUtils;
@@ -39,6 +43,7 @@ public class AnnotatedClass {
         this.mClassElement = classElement;
         this.mElementUtils = elementUtils;
         this.mFiled = new ArrayList<>();
+        this.mMethod = new ArrayList<>();
     }
 
     public String getFullClassName() {
@@ -49,31 +54,62 @@ public class AnnotatedClass {
         mFiled.add(field);
     }
 
+    public void addMethod(OnClickMethod method) {
+        mMethod.add(method);
+    }
+
     public JavaFile generateFinder() {
 
         /**
-         * 组装方法
+         * 构建方法
          */
-        MethodSpec.Builder injectMethodBuilder = MethodSpec.methodBuilder("inject")
+        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("inject")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
                 .addParameter(TypeName.get(mClassElement.asType()), "host", Modifier.FINAL)
                 .addParameter(TypeName.OBJECT, "source")
                 .addParameter(TypeUtil.FINDER, "finder");
-
+        /**
+         * 遍历添加类成员
+         */
         for (BindViewField field : mFiled) {
-            injectMethodBuilder.addStatement("host.$N=($T)finder.findView(source,$L)", field.getFieldName()
+            methodBuilder.addStatement("host.$N=($T)finder.findView(source,$L)", field.getFieldName()
                     , ClassName.get(field.getFieldType()), field.getResId());
+        }
+        /**
+         * 声明Listener
+         */
+        if (mMethod.size() > 0) {
+            methodBuilder.addStatement("$T listener", TypeUtil.ONCLICK_LISTENER);
+        }
+
+        for (OnClickMethod method : mMethod) {
+            TypeSpec listener = TypeSpec.anonymousClassBuilder("")
+                    .addSuperinterface(TypeUtil.ONCLICK_LISTENER)
+                    .addMethod(MethodSpec.methodBuilder("onClick")
+                            .addAnnotation(Override.class)
+                            .addModifiers(Modifier.PUBLIC)
+                            .returns(TypeName.VOID)
+                            .addParameter(TypeUtil.ANDROID_VIEW, "view")
+                            .addStatement("host.$N()", method.getMethodName())
+                            .build())
+                    .build();
+            methodBuilder.addStatement("listener = $L ", listener);
+            for (int id : method.ids) {
+                methodBuilder.addStatement("finder.findView(source,$L).setOnClickListener(listener)", id);
+            }
         }
 
         String packageName = getPackageName(mClassElement);
         String className = getClassName(mClassElement, packageName);
         ClassName bindClassName = ClassName.get(packageName, className);
-
+        /**
+         * 构建类
+         */
         TypeSpec finderClass = TypeSpec.classBuilder(bindClassName.simpleName() + "$$Injector")
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ParameterizedTypeName.get(TypeUtil.INJECTOR, TypeName.get(mClassElement.asType())))
-                .addMethod(injectMethodBuilder.build())
+                .addMethod(methodBuilder.build())
                 .build();
 
         return JavaFile.builder(packageName, finderClass).build();
